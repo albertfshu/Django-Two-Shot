@@ -3,6 +3,8 @@ from receipts.models import ExpenseCategory, Account, Receipt
 
 
 # Register your models here.
+
+
 @admin.register(ExpenseCategory)
 class ExpenseCategoryAdmin(admin.ModelAdmin):
     list_display = (
