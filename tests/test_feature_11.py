@@ -1,10 +1,15 @@
 from django.contrib.auth.models import User
+
 from django.test import TestCase, Client
+
 from django.urls import reverse
+
 from django.utils import timezone
 
+
 from .utils import Document
-from receipts.models import Account, ExpenseCategory, Receipt
+
+from receipts.models import Account, ExpenseCategory, ReceiptForm
 
 
 class FeatureTests(TestCase):
@@ -16,9 +21,13 @@ class FeatureTests(TestCase):
 
     def setUp(self):
         self.client = Client()
+
         self.client.force_login(self.noor)
+
         self.response = self.client.get("/receipts/create/")
+
         self.content = self.response.content.decode("utf-8")
+
         self.document = Document()
         self.document.feed(self.content)
 
@@ -28,6 +37,7 @@ class FeatureTests(TestCase):
 
     def test_create_receipt_resolves_to_create_receipt(self):
         path = reverse("create_receipt")
+
         self.assertEqual(
             path,
             "/receipts/create/",
@@ -49,6 +59,7 @@ class FeatureTests(TestCase):
 
     def test_form_is_post(self):
         form = self.document.select("html", "body", "main", "div", "form")
+
         self.assertIsNotNone(
             form,
             msg=(
@@ -56,11 +67,13 @@ class FeatureTests(TestCase):
                 "html > body > main > div > form"
             ),
         )
+
         self.assertIn(
             "method",
             form.attrs,
             msg="Did not find 'method' for the form",
         )
+
         self.assertEqual(
             form.attrs.get("method").lower(),
             "post",
@@ -69,12 +82,17 @@ class FeatureTests(TestCase):
 
     def test_form_has_vendor_input(self):
         form = self.document.select("html", "body", "main", "div", "form")
+
         inputs = form.get_all_children("input")
+
         vendor = None
+
         for input in inputs:
             if input.attrs.get("name") == "vendor":
                 vendor = input
+
                 break
+
         self.assertIsNotNone(
             vendor,
             msg="Could not find the vendor input",
@@ -82,12 +100,17 @@ class FeatureTests(TestCase):
 
     def test_form_has_total_input(self):
         form = self.document.select("html", "body", "main", "div", "form")
+
         inputs = form.get_all_children("input")
+
         total = None
+
         for input in inputs:
             if input.attrs.get("name") == "total":
                 total = input
+
                 break
+
         self.assertIsNotNone(
             total,
             msg="Could not find the total input",
@@ -95,12 +118,17 @@ class FeatureTests(TestCase):
 
     def test_form_has_tax_input(self):
         form = self.document.select("html", "body", "main", "div", "form")
+
         inputs = form.get_all_children("input")
+
         tax = None
+
         for input in inputs:
             if input.attrs.get("name") == "tax":
                 tax = input
+
                 break
+
         self.assertIsNotNone(
             tax,
             msg="Could not find the tax input",
@@ -108,12 +136,17 @@ class FeatureTests(TestCase):
 
     def test_form_has_date_input(self):
         form = self.document.select("html", "body", "main", "div", "form")
+
         inputs = form.get_all_children("input")
+
         date = None
+
         for input in inputs:
             if input.attrs.get("name") == "date":
                 date = input
+
                 break
+
         self.assertIsNotNone(
             date,
             msg="Could not find the date input",
@@ -121,12 +154,17 @@ class FeatureTests(TestCase):
 
     def test_form_has_account_select(self):
         form = self.document.select("html", "body", "main", "div", "form")
+
         selects = form.get_all_children("select")
+
         accounts = None
+
         for select in selects:
             if select.attrs.get("name") == "account":
                 accounts = select
+
                 break
+
         self.assertIsNotNone(
             accounts,
             msg="Could not find the accounts select",
@@ -134,12 +172,17 @@ class FeatureTests(TestCase):
 
     def test_form_has_category_select(self):
         form = self.document.select("html", "body", "main", "div", "form")
+
         selects = form.get_all_children("select")
+
         categories = None
+
         for select in selects:
             if select.attrs.get("name") == "category":
                 categories = select
+
                 break
+
         self.assertIsNotNone(
             categories,
             msg="Could not find the category select",
@@ -147,12 +190,17 @@ class FeatureTests(TestCase):
 
     def test_form_has_button(self):
         form = self.document.select("html", "body", "main", "div", "form")
+
         buttons = form.get_all_children("button")
+
         found_button = None
+
         for button in buttons:
             if button.inner_text().strip().lower() == "create":
                 found_button = button
+
                 break
+
         self.assertIsNotNone(
             found_button,
             msg="Could not find the 'Create' button",
@@ -160,6 +208,7 @@ class FeatureTests(TestCase):
 
     def test_create_receipt_creates_receipt(self):
         category = ExpenseCategory.objects.first()
+
         account = Account.objects.first()
 
         self.client.post(
@@ -173,13 +222,16 @@ class FeatureTests(TestCase):
                 "account": account.id,
             },
         )
+
         try:
-            Receipt.objects.get(vendor="ZZZZZZ")
-        except Receipt.DoesNotExist:
+            ReceiptForm.objects.get(vendor="ZZZZZZ")
+
+        except ReceiptForm.DoesNotExist:
             self.fail("Create does not create the Receipt object")
 
     def test_create_redirects_to_home(self):
         category = ExpenseCategory.objects.first()
+
         account = Account.objects.first()
         response = self.client.post(
             "/receipts/create/",
@@ -192,6 +244,7 @@ class FeatureTests(TestCase):
                 "account": account.id,
             },
         )
+
         self.assertEqual(
             response.headers.get("Location"),
             reverse("home"),

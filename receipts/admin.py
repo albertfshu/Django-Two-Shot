@@ -1,5 +1,5 @@
 from django.contrib import admin
-from receipts.models import ExpenseCategory, Account, Receipt
+from receipts.models import ExpenseCategory, Account, ReceiptForm
 
 
 # Register your models here.
@@ -18,7 +18,7 @@ class AccountAdmin(admin.ModelAdmin):
     list_display = ("name", "number", "owner")
 
 
-@admin.register(Receipt)
+@admin.register(ReceiptForm)
 class ReceiptAdmin(admin.ModelAdmin):
     list_display = (
         "vendor",
