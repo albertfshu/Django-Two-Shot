@@ -1,10 +1,10 @@
 from django import forms
-from receipts.models import ReceiptForm
+from receipts.models import Receipt
 
 
 class ReceiptForm(forms.ModelForm):
     class Meta:
-        model = ReceiptForm
+        model = Receipt
         fields = [
             "vendor",
             "total",

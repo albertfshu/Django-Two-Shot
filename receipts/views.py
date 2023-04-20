@@ -1,13 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from receipts.models import ReceiptForm
+from receipts.models import Account, ExpenseCategory, Receipt
 from receipts.forms import ReceiptForm
 
 
 # Create your views here.
 @login_required
 def receipt_list(request):
-    receipts = ReceiptForm.objects.filter(purchaser=request.user)
+    receipts = Receipt.objects.filter(purchaser=request.user)
     context = {"receipts": receipts}
     return render(request, "receipts/receipt_list.html", context)
 
@@ -25,3 +25,17 @@ def create_receipt(request):
         form = ReceiptForm()
     context = {"form": form}
     return render(request, "receipts/create.html", context)
+
+
+@login_required
+def category_list(request):
+    categories = ExpenseCategory.objects.filter(owner=request.user)
+    context = {"categories": categories}
+    return render(request, "receipts/categories.html", context)
+
+
+@login_required
+def account_list(request):
+    accounts = Account.objects.filter(owner=request.user)
+    context = {"accounts": accounts}
+    return render(request, "receipts/accounts.html", context)

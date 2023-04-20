@@ -5,10 +5,10 @@ from django.test import TestCase
 class FeatureTests(TestCase):
     def test_receipt_registered_with_admin(self):
         try:
-            from receipts.models import ReceiptForm
+            from receipts.models import Receipt
 
             self.assertTrue(
-                admin.site.is_registered(ReceiptForm),
+                admin.site.is_registered(Receipt),
                 msg="receipts.models.Receipt is not registered with the admin",
             )
         except ModuleNotFoundError:

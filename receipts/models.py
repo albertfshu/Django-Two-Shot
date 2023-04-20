@@ -24,8 +24,11 @@ class Account(models.Model):
         on_delete=models.CASCADE,
     )
 
+    def __str__(self):
+        return self.name
 
-class ReceiptForm(models.Model):
+
+class Receipt(models.Model):
     vendor = models.CharField(max_length=200)
     total = models.DecimalField(decimal_places=3, max_digits=10)
     tax = models.DecimalField(decimal_places=3, max_digits=10)
