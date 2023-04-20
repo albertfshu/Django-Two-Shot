@@ -7,15 +7,12 @@ from receipts.models import ExpenseCategory, Account, Receipt
 
 @admin.register(ExpenseCategory)
 class ExpenseCategoryAdmin(admin.ModelAdmin):
-    list_display = (
-        "name",
-        "owner",
-    )
+    list_display = ("name", "owner", "id")
 
 
 @admin.register(Account)
 class AccountAdmin(admin.ModelAdmin):
-    list_display = ("name", "number", "owner")
+    list_display = ("name", "number", "owner", "id")
 
 
 @admin.register(Receipt)
@@ -25,7 +22,7 @@ class ReceiptAdmin(admin.ModelAdmin):
         "total",
         "tax",
         "date",
-        "purchaser",
         "category",
         "account",
+        "id",
     )

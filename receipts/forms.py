@@ -15,7 +15,7 @@ class ReceiptForm(forms.ModelForm):
         ]
 
 
-class ExpenseCategory(forms.ModelForm):
+class ExpenseCategoryForm(forms.ModelForm):
     class Meta:
         model = ExpenseCategory
         fields = ["name"]
